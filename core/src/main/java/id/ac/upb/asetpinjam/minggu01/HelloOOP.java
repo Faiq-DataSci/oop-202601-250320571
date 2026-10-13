@@ -7,13 +7,21 @@ public class HelloOOP {
 
     // TODO minggu 1: tambahkan field private untuk nama dan nim.
 
+    // Atribut nama dan nim
+    private String nama;
+    private String nim;
+
+    // Konstruktor
     public HelloOOP(String nama, String nim) {
-        throw new UnsupportedOperationException("TODO minggu 1: konstruktor HelloOOP");
+        this.nama = nama;
+        this.nim = nim;
     }
 
     /** TODO minggu 1: sapaan memuat "Aset-Pinjam", nama, dan NIM. */
+
+    // Method
     public String sapa() {
-        throw new UnsupportedOperationException("TODO minggu 1: HelloOOP.sapa");
+        return "Hello Aset-Pinjam, Saya " + nama + " (" + nim + ")";
     }
 
     public static void main(String[] args) {
