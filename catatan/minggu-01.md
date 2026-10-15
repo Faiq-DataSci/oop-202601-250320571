@@ -1,11 +1,5 @@
 # Catatan Minggu 01 : Membedakan Pola Kode Prosedural, OOP dan Fungsional
 
-## Identitas
-
-- **Nama** : Faiq Atha Rulloh
-- **NIM** : 250320571
-- **Kelas** : 1DSRA
-
 ## Yang saya kerjakan
 
 Bagian yang saya kerjakan adalah pada `core/src/main/java/id/ac/upb/asetpinjam/minggu01/HelloFungsional.java, HelloOOP.java, HelloProsedural.java`

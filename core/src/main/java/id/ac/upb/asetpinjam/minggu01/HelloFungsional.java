@@ -7,6 +7,7 @@ import java.util.function.Function;
  * Minggu 1, gaya FUNGSIONAL: fungsi sebagai nilai (lambda), tanpa state yang
  * berubah.
  */
+
 public final class HelloFungsional {
 
     // Fungsi

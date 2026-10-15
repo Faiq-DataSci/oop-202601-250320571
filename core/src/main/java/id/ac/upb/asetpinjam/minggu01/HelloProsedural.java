@@ -6,6 +6,7 @@ import id.ac.upb.asetpinjam.config.Varian;
  * Minggu 1, gaya PROSEDURAL: hanya fungsi statis dan data primitif, tanpa objek
  * buatan sendiri.
  */
+
 public final class HelloProsedural {
 
     // Fungsi
