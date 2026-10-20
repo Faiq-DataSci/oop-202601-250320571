@@ -21,4 +21,9 @@ public class Ruang extends Aset {
     public JenisAset getJenis() {
         return JenisAset.RUANG;
     }
+
+    @Override
+    public long hitungDenda(int hariTerlambat) {
+        return hitungDenda(hariTerlambat, 1);
+    }
 }

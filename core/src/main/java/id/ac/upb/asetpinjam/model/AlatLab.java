@@ -30,4 +30,9 @@ public class AlatLab extends Aset {
     public JenisAset getJenis() {
         return JenisAset.ALAT_LAB;
     }
+
+    @Override
+    public long hitungDenda(int hariTerlambat) {
+        return hitungDenda(hariTerlambat, 4);
+    }
 }
