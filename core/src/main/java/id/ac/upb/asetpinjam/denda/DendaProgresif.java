@@ -13,6 +13,11 @@ public class DendaProgresif implements AturanDenda {
 
     @Override
     public long hitung(Aset aset, int hariTerlambat) {
-        throw new UnsupportedOperationException("TODO minggu 5: DendaProgresif.hitung");
+        long dendaFlat = aset.hitungDenda(hariTerlambat);
+        if (hariTerlambat <= 7) {
+            return dendaFlat;
+        }
+        int blokMinggu = (hariTerlambat - 1) / 7;
+        return dendaFlat + (dendaFlat * blokMinggu / 10);
     }
 }

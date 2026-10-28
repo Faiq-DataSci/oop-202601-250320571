@@ -15,7 +15,7 @@ import id.ac.upb.asetpinjam.kontrak.DapatDipinjam;
  * (TestSupport.aset(...) di folder test menyesuaikan sendiri, lihat
  * docs/minggu-05.md).
  */
-public class Aset implements DapatDipinjam {
+public abstract class Aset implements DapatDipinjam {
 
     // TODO minggu 2: field private: kode, nama, status (default TERSEDIA), kondisi
     // (default BAIK).
@@ -85,23 +85,19 @@ public class Aset implements DapatDipinjam {
      */
     @Override
     public boolean bisaDipinjam() {
-        throw new UnsupportedOperationException("TODO minggu 5");
+        return status == StatusAset.TERSEDIA && kondisi != Kondisi.RUSAK_BERAT;
     }
 
     /**
-     * TODO minggu 3: dioverride tiap subclass agar mengembalikan jenis yang benar.
+     * Jenis aset, diisi oleh tiap subclass.
      */
-    public JenisAset getJenis() {
-        throw new UnsupportedOperationException("TODO minggu 3");
-    }
+    public abstract JenisAset getJenis();
 
     /**
      * TODO minggu 4: denda keterlambatan. Dioverride tiap subclass (aturan di
      * docs/aturan-bisnis.md).
      */
-    public long hitungDenda(int hariTerlambat) {
-        throw new UnsupportedOperationException("TODO minggu 4");
-    }
+    public abstract long hitungDenda(int hariTerlambat);
 
     /**
      * Menghitung denda dengan multiplier jenis aset. Hari negatif ditolak.
