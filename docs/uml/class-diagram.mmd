@@ -1,0 +1,244 @@
+%%{init: {"class": {"hierarchicalNamespaces": false}}}%%
+classDiagram
+    direction LR
+
+    namespace id.ac.upb.asetpinjam.model {
+        class Aset {
+            <<abstract>>
+            -String kode
+            -String nama
+            -StatusAset status
+            -Kondisi kondisi
+            +Aset(String kode, String nama)
+            +getKode() String
+            +getNama() String
+            +getStatus() StatusAset
+            +getKondisi() Kondisi
+            +setNama(String nama) void
+            +setStatus(StatusAset status) void
+            +setKondisi(Kondisi kondisi) void
+            +bisaDipinjam() boolean
+            +getJenis() JenisAset
+            +hitungDenda(int hariTerlambat) long
+            #hitungDenda(int hariTerlambat, int multiplier) long
+        }
+        note for Aset "getJenis() dan hitungDenda(int) abstrak"
+
+        class Ruang {
+            -int kapasitas
+            +Ruang(String kode, String nama, int kapasitas)
+            +getKapasitas() int
+            +getJenis() JenisAset
+            +hitungDenda(int hariTerlambat) long
+        }
+
+        class Laptop {
+            -String spesifikasi
+            -String nomorInventaris
+            +Laptop(String kode, String nama, String spesifikasi, String nomorInventaris)
+            +getSpesifikasi() String
+            +getNomorInventaris() String
+            +getJenis() JenisAset
+            +hitungDenda(int hariTerlambat) long
+        }
+
+        class AlatLab {
+            -String laboratorium
+            -TingkatRisiko tingkatRisiko
+            +AlatLab(String kode, String nama, String laboratorium, TingkatRisiko tingkatRisiko)
+            +getLaboratorium() String
+            +getTingkatRisiko() TingkatRisiko
+            +getJenis() JenisAset
+            +hitungDenda(int hariTerlambat) long
+        }
+
+        class Peminjam {
+            <<record>>
+            +String id
+            +String nama
+        }
+
+        class Peminjaman {
+            -String id
+            -Peminjam peminjam
+            -Aset aset
+            -LocalDateTime mulai
+            -LocalDateTime selesai
+            -StatusPeminjaman status
+            +Peminjaman(String id, Peminjam peminjam, Aset aset, LocalDateTime mulai, LocalDateTime selesai)
+            +getId() String
+            +getPeminjam() Peminjam
+            +getAset() Aset
+            +getMulai() LocalDateTime
+            +getSelesai() LocalDateTime
+            +getStatus() StatusPeminjaman
+            +setStatusDariPenyimpanan(StatusPeminjaman status) void
+            +ubahStatus(StatusPeminjaman baru) void
+        }
+
+        class StatusAset {
+            <<enumeration>>
+            TERSEDIA
+            DIPINJAM
+            RUSAK
+        }
+
+        class Kondisi {
+            <<enumeration>>
+            BAIK
+            RUSAK_RINGAN
+            RUSAK_BERAT
+        }
+
+        class JenisAset {
+            <<enumeration>>
+            RUANG
+            LAPTOP
+            ALAT_LAB
+        }
+
+        class StatusPeminjaman {
+            <<enumeration>>
+            DIAJUKAN
+            DISETUJUI
+            DITOLAK
+            DIBATALKAN
+            DIPINJAM
+            TERLAMBAT
+            DIKEMBALIKAN
+        }
+
+        class TingkatRisiko {
+            <<enumeration>>
+            RENDAH
+            SEDANG
+            TINGGI
+        }
+    }
+
+    namespace id.ac.upb.asetpinjam.kontrak {
+        class DapatDipinjam {
+            <<interface>>
+            +bisaDipinjam() boolean
+        }
+
+        class AturanDenda {
+            <<interface>>
+            +hitung(Aset aset, int hariTerlambat) long
+        }
+    }
+
+    namespace id.ac.upb.asetpinjam.katalog {
+        class KatalogAset {
+            -List~Aset~ daftar
+            +tambah(Aset aset) void
+            +semua() List~Aset~
+            +cari(String kata) List~Aset~
+            +cari(String kata, JenisAset jenis) List~Aset~
+        }
+    }
+
+    namespace id.ac.upb.asetpinjam.jadwal {
+        class JadwalPeminjaman {
+            -List~Peminjaman~ daftar
+            -int kuotaLaptop
+            +JadwalPeminjaman(int kuotaLaptop)
+            #kuotaLaptop() int
+            #daftarMutable() List~Peminjaman~
+            +tambah(Peminjaman p) void
+            +bentrok(Peminjaman baru) boolean
+            +semuaUrutMulai() List~Peminjaman~
+            +perAset() Map~String,List~Peminjaman~~
+            +hapus(String id) boolean
+            +ajukan(Peminjaman baru) void
+        }
+    }
+
+    namespace id.ac.upb.asetpinjam.denda {
+        class DendaFlat {
+            +hitung(Aset aset, int hariTerlambat) long
+        }
+
+        class DendaProgresif {
+            +hitung(Aset aset, int hariTerlambat) long
+        }
+
+        class LayananDenda {
+            -AturanDenda aturan
+            +LayananDenda(AturanDenda aturan)
+            +hitung(Aset aset, int hariTerlambat) long
+        }
+    }
+
+    namespace id.ac.upb.asetpinjam.factory {
+        class AsetFactory {
+            <<utility>>
+            -AsetFactory()
+            +buat(JenisAset jenis, String kode, String nama, String... atribut) Aset
+        }
+    }
+
+    namespace id.ac.upb.asetpinjam.dao {
+        class AsetDAO {
+            <<interface>>
+            +simpan(Aset aset) void
+            +cariByKode(String kode) Optional~Aset~
+            +semua() List~Aset~
+            +perbarui(Aset aset) void
+            +hapus(String kode) boolean
+        }
+
+        class PeminjamanDAO {
+            <<interface>>
+            +simpan(Peminjaman peminjaman) void
+            +cariById(String id) Optional~Peminjaman~
+            +perbaruiStatus(String id, StatusPeminjaman status) boolean
+        }
+
+        class JdbcAsetDAO {
+            -Supplier~Connection~ sumberKoneksi
+            +JdbcAsetDAO(Supplier~Connection~ sumberKoneksi)
+            +simpan(Aset aset) void
+            +cariByKode(String kode) Optional~Aset~
+            +semua() List~Aset~
+            +perbarui(Aset aset) void
+            +hapus(String kode) boolean
+        }
+
+        class JdbcPeminjamanDAO {
+            -Supplier~Connection~ sumberKoneksi
+            -AsetDAO asetDao
+            +JdbcPeminjamanDAO(Supplier~Connection~ sumberKoneksi, AsetDAO asetDao)
+            +simpan(Peminjaman peminjaman) void
+            +cariById(String id) Optional~Peminjaman~
+            +perbaruiStatus(String id, StatusPeminjaman status) boolean
+        }
+    }
+
+    Aset <|-- Ruang
+    Aset <|-- Laptop
+    Aset <|-- AlatLab
+    DapatDipinjam <|.. Aset
+
+    AturanDenda <|.. DendaFlat
+    AturanDenda <|.. DendaProgresif
+
+    AsetDAO <|.. JdbcAsetDAO
+    PeminjamanDAO <|.. JdbcPeminjamanDAO
+
+    KatalogAset o-- "0..*" Aset : daftar
+    JadwalPeminjaman o-- "0..*" Peminjaman : daftar
+    Peminjaman --> "1" Peminjam : peminjam
+    Peminjaman --> "1" Aset : aset
+    Peminjaman --> "1" StatusPeminjaman : status
+    Aset --> "1" StatusAset : status
+    Aset --> "1" Kondisi : kondisi
+    AlatLab --> "1" TingkatRisiko : tingkatRisiko
+    LayananDenda --> "1" AturanDenda : aturan
+    LayananDenda ..> Aset : hitung
+    JdbcPeminjamanDAO --> "1" AsetDAO : asetDao
+    JadwalPeminjaman ..> Peminjam : periksa kuota
+    JadwalPeminjaman ..> JenisAset : cek jenis laptop
+    AsetFactory ..> Aset : membuat
+    AsetFactory ..> JenisAset : jenis
+    KatalogAset ..> JenisAset : filter

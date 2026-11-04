@@ -1,0 +1,34 @@
+sequenceDiagram
+    autonumber
+    actor P as Peminjam
+    participant J as JadwalPeminjaman
+    participant PJ as Peminjaman
+    participant A as Aset
+
+    P->>PJ: new Peminjaman(id, peminjam, aset, mulai, selesai)
+    activate PJ
+    PJ->>PJ: validasi data dan selesai > mulai
+    PJ-->>P: objek baru, status DIAJUKAN
+    deactivate PJ
+
+    P->>J: ajukan(baru)
+    activate J
+
+    J->>A: getJenis()
+    A-->>J: RUANG / LAPTOP / ALAT_LAB
+
+    J->>J: bentrok(baru)
+    alt bentrok == true
+        J-->>P: throw PeminjamanBentrokException
+    else bentrok == false
+        J->>J: hitung laptop aktif milik peminjam
+        alt jenis LAPTOP dan jumlah aktif >= kuotaLaptop
+            J-->>P: throw KuotaHabisException
+        else kuota masih tersedia
+            J->>J: tambah(baru)
+            J->>PJ: status tetap DIAJUKAN
+            J-->>P: pengajuan diterima
+        end
+    end
+
+    deactivate J
